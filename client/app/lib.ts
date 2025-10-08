@@ -1,3 +1,12 @@
+export interface DragItem {
+  ship: Ship;
+  orientation: 'horizontal' | 'vertical';
+  isNew: boolean;
+  oldRow?: number;
+  oldCol?: number;
+  oldOrientation?: 'horizontal' | 'vertical';
+}
+
 /**
  * Defines the fleet composition: sizes of ships to place (standard Battleship setup).
  * Total: 1x4, 2x3, 3x2, 4x1 = 20 cells.

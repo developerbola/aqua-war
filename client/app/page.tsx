@@ -17,6 +17,7 @@ import {
   Ship,
   Cell,
   ShipPlacement,
+  DragItem,
 } from "@/app/lib";
 import { toast } from "sonner";
 
@@ -468,7 +469,7 @@ export default function SeaBattle() {
   }) => {
     const [{ isOver }, drop] = useDrop(() => ({
       accept: "ship",
-      drop: (item: any) => {
+      drop: (item: DragItem) => {
         if (
           (phase === "placing" || (phase === "attacking" && editMode)) &&
           isPlayer
