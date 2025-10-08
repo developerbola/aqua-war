@@ -468,7 +468,7 @@ export default function SeaBattle() {
   }) => {
     const [{ isOver }, drop] = useDrop(() => ({
       accept: "ship",
-      drop: (item: any, monitor) => {
+      drop: (item: any) => {
         if (
           (phase === "placing" || (phase === "attacking" && editMode)) &&
           isPlayer
