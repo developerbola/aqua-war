@@ -154,27 +154,3 @@ export const placeShipOnBoard = (
     cells[r][c].ship = isShip;
   }
 };
-
-/**
- * Randomly places the entire fleet on the board.
- * Tries up to 100 times per ship to find valid spot (using canPlaceShip).
- * Skips if no spot found (rare on 10x10 grid).
- */
-export const placeRandomFleet = (cells: Cell[][]): ShipPlacement[] => {
-  const placements: ShipPlacement[] = [];
-  SHIPS.forEach((ship) => {
-    let attempts = 0;
-    while (attempts < 100) {
-      const row = Math.floor(Math.random() * cells.length);
-      const col = Math.floor(Math.random() * cells[0].length);
-      const dir = Math.random() > 0.5 ? "horizontal" : "vertical";
-      if (canPlaceShip(cells, row, col, ship.length, dir)) {
-        placeShipOnBoard(cells, row, col, ship.length, dir, true);
-        placements.push({ ship, row, col, orientation: dir });
-        break;
-      }
-      attempts++;
-    }
-  });
-  return placements;
-};

@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import "./styles/globals.css";
 
 export default function RootLayout({
@@ -12,7 +13,10 @@ export default function RootLayout({
         <meta name="description" content="The sea battle game in web." />
         <link rel="icon" href="/favicon.svg" />
       </head>
-      <body className={`antialiased`}>{children}</body>
+      <body className={`antialiased`}>
+        {children}
+        <Toaster richColors />
+      </body>
     </html>
   );
 }

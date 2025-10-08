@@ -14,11 +14,11 @@ import {
   TOTAL_SHIP_CELLS,
   canPlaceShip,
   placeShipOnBoard,
-  placeRandomFleet,
   Ship,
   Cell,
   ShipPlacement,
 } from "@/app/lib";
+import { toast } from "sonner";
 
 interface Board {
   cells: Cell[][];
@@ -328,7 +328,7 @@ export default function SeaBattle() {
       newCells.flat().filter((c) => c.ship && c.hit).length ===
       opponentBoard.totalShipCells;
     if (allSunk) {
-      alert("You win! All opponent ships sunk.");
+      toast.success("You win! All opponent ships sunk.");
       resetGame();
     }
   };
@@ -383,7 +383,8 @@ export default function SeaBattle() {
       "border border-gray-200 w-8 h-8 flex items-center justify-center text-xs cursor-pointer hover:bg-gray-50 transition-colors";
     if (cell.hit) cls += " bg-red-100 text-red-600 border-red-300";
     if (cell.miss) cls += " bg-blue-100 text-blue-600 border-blue-300";
-    if (cell.ship && isPlayer) cls += " bg-gray-800 hover:bg-gray-800 text-white";
+    if (cell.ship && isPlayer)
+      cls += " bg-gray-800 hover:bg-gray-800 text-white";
     if (!isPlayer && !cell.hit && !cell.miss) cls += " bg-gray-50";
     return cls;
   };
