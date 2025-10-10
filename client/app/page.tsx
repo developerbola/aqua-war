@@ -567,9 +567,6 @@ export default function SeaBattle() {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-6">
-          Sea Battle
-        </h1>
         <div className="flex gap-6 mb-4">
           {showSidebar && (
             <div className="w-32 space-y-2">
