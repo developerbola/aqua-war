@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 
 * {
-  user-select: none;
+  /* user-select: none; */
 }
 
 @theme inline {

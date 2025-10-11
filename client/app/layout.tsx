@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import "./styles/globals.css";
+import Chat from "./Chat";
 
 export default function RootLayout({
   children,

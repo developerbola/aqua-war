@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot index.js"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "hono": "^4.9.10",
+    "ws": "^8.18.3"
+  }
+}

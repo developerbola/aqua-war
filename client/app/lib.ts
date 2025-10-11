@@ -7,10 +7,6 @@ export interface DragItem {
   oldOrientation?: 'horizontal' | 'vertical';
 }
 
-/**
- * Defines the fleet composition: sizes of ships to place (standard Battleship setup).
- * Total: 1x4, 2x3, 3x2, 4x1 = 20 cells.
- */
 export const ships = [
   { size: 4 },
   { size: 3 },
@@ -24,18 +20,12 @@ export const ships = [
   { size: 1 },
 ];
 
-/**
- * Interface for a ship object: unique ID, display name, and length in cells.
- */
 export interface Ship {
   id: string;
   name: string;
   length: number;
 }
 
-/**
- * Interface for a ship placement: tracks position and orientation for editing/sinking checks.
- */
 export interface ShipPlacement {
   ship: Ship;
   row: number;
@@ -43,22 +33,18 @@ export interface ShipPlacement {
   orientation: "horizontal" | "vertical";
 }
 
-/**
- * Maps ship size to a human-readable name (e.g., 4 -> 'Battleship').
- * Used for labeling ships in the UI.
- */
 export const getShipName = (size: number): string => {
   switch (size) {
     case 4:
-      return "#";
+      return " ";
     case 3:
-      return "#";
+      return " ";
     case 2:
-      return "#";
+      return " ";
     case 1:
-      return "#";
+      return " ";
     default:
-      return `#`;
+      return ` `; // ■
   }
 };
 
@@ -77,7 +63,7 @@ export const SHIPS: Ship[] = ships.map((s, i) => ({
  */
 export const TOTAL_SHIP_CELLS = ships.reduce((sum, s) => sum + s.size, 0); // 20
 
-/**
+/* *
  * Interface for a grid cell: position, and flags for game state (ship, hit, miss).
  */
 export interface Cell {
