@@ -1,110 +1,170 @@
 import { Hono } from "hono";
 import { WebSocketServer } from "ws";
 import http from "http";
-import { createRoom, joinRoom, leaveRoom } from "./src/controllers/controllers";
-import { handleGameMove } from "./src/handlers/handleGameMove";
 
 const app = new Hono();
+const server = http.createServer(app.fetch);
+const wss = new WebSocketServer({ server, path: "/ws" });
+
+const rooms = new Map(); // { roomId: { players: [ws1, ws2] } }
 
 app.get("/status", (c) => c.json({ status: "ok" }));
 
-const server = http.createServer(app.fetch);
+function send(ws, data) {
+  if (ws.readyState === ws.OPEN) {
+    ws.send(JSON.stringify(data));
+  }
+}
 
-const wss = new WebSocketServer({ server, path: "/ws" });
+
+
+
+function createRoom(ws) {
+  const roomId = Math.random().toString(36).slice(2, 8);
+
+  rooms.set(roomId, { players: [ws] });
+  
+  ws.roomId = roomId;
+  
+  ws.playerId = 1;
+
+  send(ws, { system: `Room ${roomId} created. Waiting for opponent...` });
+  
+  console.log(`Room ${roomId} created`);
+}
+
+
+
+
+function joinRoom(roomId, ws) {
+  const room = rooms.get(roomId);
+  if (!room) {
+    send(ws, { error: "Room not found" });
+    return;
+  }
+
+  if (room.players.length >= 2) {
+    send(ws, { error: "Room is full" });
+    return;
+  }
+
+  room.players.push(ws);
+  ws.roomId = roomId;
+  ws.playerId = 2;
+
+  const [p1, p2] = room.players;
+  send(p1, { system: "Opponent joined! game start." });
+  send(p2, { system: `joined room ${roomId}. game start.` });
+
+  console.log(`Player joined room ${roomId}`);
+}
+
+
+
+
+function leaveRoom(ws) {
+  const roomId = ws.roomId;
+  if (!roomId) return;
+  const room = rooms.get(roomId);
+  if (!room) return;
+
+  room.players = room.players.filter((p) => p !== ws);
+
+  if (room.players.length === 0) {
+    rooms.delete(roomId);
+    console.log(`room ${roomId} deleted (empty)`);
+  } else {
+    const remaining = room.players[0];
+    send(remaining, { system: "Opponent left the game." });
+  }
+}
+
+
+
+
+function handleAttack(ws, coord) {
+  const validCols = "ABCDEFHIJ";
+  const validRows = Array.from({ length: 10 }, (_, i) => String(i + 1));
+
+  const col = coord[0]?.toUpperCase();
+  const row = coord.slice(1);
+
+  if (!validCols.includes(col) || !validRows.includes(row)) {
+    send(ws, { error: "Invalid coordinate! use a-j and 1-10" });
+    return;
+  }
+
+  const room = rooms.get(ws.roomId);
+  if (!room) {
+    send(ws, { error: "room not found" });
+    return;
+  }
+
+  const opponent = room.players.find((p) => p !== ws);
+  if (!opponent) {
+    send(ws, { system: "Waiting for opponent..." });
+    return;
+  }
+
+  send(opponent, { attack: coord });
+  send(ws, { system: `Attack sent to ${coord}` });
+  console.log(`Player ${ws.playerId} attacked ${coord} in room ${ws.roomId}`);
+}
+
+
+
 
 wss.on("connection", (ws) => {
-  console.log(`New connection`);
+  console.log("new connection");
 
-  if (ws.readyState === ws.OPEN) {
-    ws.send(JSON.stringify({ system: "Connected to server" }));
-  }
+  send(ws, { system: "Connected ro battleship server" });
 
   ws.on("message", (raw) => {
     try {
       const msg = JSON.parse(raw.toString());
 
-      if (msg.type === "create") {
-        if (ws.roomId) {
-          const errorMsg = JSON.stringify({
-            error: "Already in a room! Leave first.",
-          });
-          if (ws.readyState === ws.OPEN) {
-            ws.send(errorMsg);
+      switch (msg.type) {
+        case "create":
+          if (ws.roomId) {
+            send(ws, { error: "Already in a room. Leave first" });
+            return;
           }
-          return;
-        }
-        createRoom(ws);
-        return;
-      }
+          createRoom(ws);
+          break;
 
-      if (msg.type === "join") {
-        if (ws.roomId) {
-          const errorMsg = JSON.stringify({
-            error: "Already in a room! Leave first.",
-          });
-          if (ws.readyState === ws.OPEN) {
-            ws.send(errorMsg);
+        case "join":
+          if (ws.roomId) {
+            send(ws, { error: "already in a room. leave first" });
+            return;
           }
-          return;
-        }
-        joinRoom(msg.room, ws);
-        return;
-      }
-
-      // Handle game move only if in a room
-      if (msg.type === "move" && ws.roomId) {
-        const validChoices = ["rock", "paper", "scissors"];
-        if (!validChoices.includes(msg.choice)) {
-          const errorMsg = JSON.stringify({
-            error: "Invalid choice! Must be rock, paper, or scissors.",
-          });
-          if (ws.readyState === ws.OPEN) {
-            ws.send(errorMsg);
+          joinRoom(msg.room, ws);
+          break;
+        case "attack":
+          if (!ws.roomId) {
+            send(ws, { error: "Join or create a room first" });
+            return;
           }
-          return;
-        }
-        handleGameMove(ws.roomId, ws, msg.choice);
-      } else if (!ws.roomId) {
-        const errorMsg = JSON.stringify({
-          error: "Join or create a room first!",
-        });
-        if (ws.readyState === ws.OPEN) {
-          ws.send(errorMsg);
-        }
+          handleAttack(ws, msg.coord);
+        case "leave":
+          leaveRoom(ws);
+          break;
+        default:
+          send(ws, { error: "unknown message type" });
       }
-    } catch (e) {
-      console.error(`Message handling error: ${e.message}`);
-      const errorMsg = JSON.stringify({ error: "Invalid message format!" });
-      if (ws.readyState === ws.OPEN) {
-        ws.send(errorMsg);
-      }
+    } catch (err) {
+      console.error("Invalid message:", err);
+      send(ws, { error: "Invalid message format" });
     }
   });
 
-  ws.on("close", (code, reason) => {
-    console.log(
-      `Connection closed for ${ws._socket?.remoteAddress}: code ${code}, reason: ${reason}`
-    );
-    leaveRoom(ws);
-  });
-
-  ws.on("error", (error) => {
-    console.error(
-      `WebSocket error for ${ws._socket?.remoteAddress}: ${error.message}`
-    );
-    // Optionally close the connection
-    if (ws.readyState === ws.OPEN) {
-      ws.close(1011, "Server error");
-    }
-  });
-
-  // Handle unexpected pings/pongs or other events if needed
-  ws.on("ping", () => console.log("Ping received"));
-  ws.on("pong", () => console.log("Pong sent"));
+  ws.on("close", () => leaveRoom(ws));
+  ws.on("error", (err) => console.error("WebSocket error: ", err.message));
 });
 
-const PORT = 8080;
 
+
+
+const PORT = 8080;
 server.listen(PORT, () => {
-  console.log(`Server is running on ${PORT}`);
+  console.log(`server running on ${PORT}`);
 });
