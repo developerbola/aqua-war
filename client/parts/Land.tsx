@@ -2,15 +2,16 @@
 import Block from "@/components/Block";
 
 const Land = () => {
-  // Define rows and columns count
   const rows = 25;
   const cols = 45;
 
   return (
     <div
-      className="grid h-screen w-full place-items-center p-5"
+      className="grid h-screen w-full p-10"
       style={{
-        gridTemplateColumns: `repeat(${cols}, auto)`,
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gridTemplateRows: `repeat(${rows}, 1fr)`,
+        gap: "1px",
       }}
     >
       {Array.from({ length: rows * cols }).map((_, index) => (

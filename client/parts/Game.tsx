@@ -14,7 +14,7 @@ import {
   Ship,
   Cell,
   ShipPlacement,
-} from "@/app/lib";
+} from "@/lib/game";
 import { toast } from "sonner";
 
 interface Board {
