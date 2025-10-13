@@ -1,6 +1,5 @@
 import { Toaster } from "@/components/ui/sonner";
 import "./styles/globals.css";
-import Demo from "./demo";
 
 export default function RootLayout({
   children,
@@ -15,8 +14,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.svg" />
       </head>
       <body className={`antialiased`}>
-        {/* {children} */}
-        <Demo />
+        {children}
         <Toaster richColors />
       </body>
     </html>
