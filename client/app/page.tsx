@@ -1,9 +1,11 @@
+import GameButton from "@/parts/GameButton";
 import Land from "../parts/Land";
 
 const Main = () => {
   return (
-    <div>
-      <Land/>
+    <div className="relative h-screen w-screen">
+      <Land />
+      <GameButton />
     </div>
   );
 };

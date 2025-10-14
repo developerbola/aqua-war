@@ -1,15 +1,64 @@
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 
-const Block = () => {
-  const [isActive, setIsActive] = useState(false);
+type BlockProps = {
+  isActive: boolean;
+  hasLeft: boolean;
+  hasRight: boolean;
+  hasTop: boolean;
+  hasBottom: boolean;
+  onToggle: () => void;
+};
+
+const Block = ({
+  isActive,
+  hasLeft,
+  hasRight,
+  hasTop,
+  hasBottom,
+  onToggle,
+}: BlockProps) => {
+  const defaultRadius = "8px";
+  const activeRadius = "0px";
+
+  let topLeftRadius = defaultRadius;
+  let topRightRadius = defaultRadius;
+  let bottomLeftRadius = defaultRadius;
+  let bottomRightRadius = defaultRadius;
+
+  if (isActive) {
+    if (hasLeft) {
+      topLeftRadius = activeRadius;
+      bottomLeftRadius = activeRadius;
+    }
+    if (hasRight) {
+      topRightRadius = activeRadius;
+      bottomRightRadius = activeRadius;
+    }
+    if (hasTop) {
+      topLeftRadius = activeRadius;
+      topRightRadius = activeRadius;
+    }
+    if (hasBottom) {
+      bottomLeftRadius = activeRadius;
+      bottomRightRadius = activeRadius;
+    }
+  }
+
   return (
     <div
       className={cn(
-        "w-full h-full grid place-items-center hover:bg-neutral-100",
-        isActive && "bg-neutral-800 hover:bg-neutral-800"
+        "w-full h-full grid place-items-center",
+        isActive
+          ? "bg-neutral-800 hover:bg-neutral-800"
+          : "hover:bg-[#00000009] rounded-2xl"
       )}
-      onClick={() => setIsActive(!isActive)}
+      style={{
+        borderTopLeftRadius: topLeftRadius,
+        borderTopRightRadius: topRightRadius,
+        borderBottomLeftRadius: bottomLeftRadius,
+        borderBottomRightRadius: bottomRightRadius,
+      }}
+      onClick={onToggle}
     >
       <div className="size-[5px] bg-neutral-400 rounded-full"></div>
     </div>
