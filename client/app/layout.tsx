@@ -31,7 +31,6 @@ export default function RootLayout({
               border: "none",
               color: "#fff",
               fontSize: "17px",
-              fontFamily: "var(--font-jet)",
               fontWeight: "500",
               padding: "10px 15px",
               width: "200px",

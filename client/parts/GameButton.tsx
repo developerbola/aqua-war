@@ -73,7 +73,7 @@ const GameButton = () => {
               }}
             />
           ))}
-          <Button className="h-[80px] w-[205px] text-4xl z-10 absolute inset-0 m-auto active:scale-98">
+          <Button className="h-[80px] w-[205px] text-4xl z-10 absolute inset-0 m-auto active:scale-98 hover:cursor-pointer hover:bg-primary">
             Start
           </Button>
         </div>
