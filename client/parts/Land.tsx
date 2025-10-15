@@ -18,22 +18,20 @@ const Land = () => {
     });
   };
 
-  // Save active block IDs as a flat array to localStorage
   const saveState = () => {
     const activeIds: number[] = [];
     active.forEach((rowArr, row) => {
       rowArr.forEach((isActive, col) => {
         if (isActive) {
-          activeIds.push(row * cols + col); // Flat ID: 0 to (rows*cols-1)
+          activeIds.push(row * cols + col);
         }
       });
     });
     localStorage.setItem("blockState", JSON.stringify(activeIds));
-    console.log("Saved active IDs:", activeIds); // For debugging or export
-    toast("Saved"); // Or use a toast/notification
+    console.log("Saved active IDs:", activeIds);
+    toast("Saved");
   };
 
-  // Load from localStorage and restore state
   const loadState = () => {
     const saved = localStorage.getItem("blockState");
     if (saved) {
@@ -58,20 +56,6 @@ const Land = () => {
 
   return (
     <div className="flex flex-col h-screen w-full">
-      <div className="absolute top-10 left-[40%] flex justify-center gap-4 p-4">
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-          onClick={saveState}
-        >
-          Save State
-        </button>
-        <button
-          className="px-4 py-2 bg-green-500 text-white rounded"
-          onClick={loadState}
-        >
-          Load State
-        </button>
-      </div>
       <div
         className="grid flex-1 p-10"
         style={{

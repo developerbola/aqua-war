@@ -17,7 +17,7 @@ const Block = ({
   hasBottom,
   onToggle,
 }: BlockProps) => {
-  const defaultRadius = "8px";
+  const defaultRadius = "10px";
   const activeRadius = "0px";
 
   let topLeftRadius = defaultRadius;

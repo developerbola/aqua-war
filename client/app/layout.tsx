@@ -4,7 +4,7 @@ import { JetBrains_Mono } from "next/font/google";
 
 const jet = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["500"],
+  weight: ["500", "700", "800"],
   variable: "--font-jet",
 });
 

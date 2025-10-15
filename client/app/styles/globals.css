@@ -1,13 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
-* {
-  user-select: text;
-}
-
-button {
-  user-select: none;
-}
+@import "./styles.css";
 
 @theme inline {
   --color-background: var(--background);

@@ -1,0 +1,18 @@
+* {
+  user-select: none;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+#balanceContainer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: #fbfbfbbf;
+  border-radius: 10px;
+  filter: blur(2px);
+  backdrop-filter: blur(0.5px);
+}
