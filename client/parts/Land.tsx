@@ -55,9 +55,9 @@ const Land = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full">
+    <div className="flex flex-col z-1 w-screen h-screen p-10">
       <div
-        className="grid flex-1 p-10"
+        className="grid flex-1"
         style={{
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
           gridTemplateRows: `repeat(${rows}, 1fr)`,

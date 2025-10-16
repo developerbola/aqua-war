@@ -50,7 +50,7 @@ const Block = ({
         "w-full h-full grid place-items-center",
         isActive
           ? "bg-neutral-800 hover:bg-neutral-800"
-          : "hover:bg-[#00000009] rounded-2xl"
+          : "hover:bg-[#00000009]"
       )}
       style={{
         borderTopLeftRadius: topLeftRadius,
@@ -60,7 +60,9 @@ const Block = ({
       }}
       onClick={onToggle}
     >
-      <div className="size-[5px] bg-neutral-400 rounded-full"></div>
+      {isActive || (
+        <div className="size-[5px] bg-neutral-300 rounded-full"></div>
+      )}
     </div>
   );
 };

@@ -33,7 +33,7 @@ interface DragItem {
 
 const GRID_SIZE = 10;
 
-export default function SeaBattle() {
+export default function Game() {
   // Game phase: 'placing' for initial setup, 'attacking' for gameplay.
   const [phase, setPhase] = useState<"placing" | "attacking">("placing");
   // Edit mode: allows repositioning ships after placement.

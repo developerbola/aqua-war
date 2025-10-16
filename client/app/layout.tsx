@@ -1,11 +1,17 @@
 import { Toaster } from "@/components/ui/sonner";
 import "./styles/globals.css";
-import { JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono, Montserrat } from "next/font/google";
 
 const jet = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["500", "700", "800"],
   variable: "--font-jet",
+});
+
+const mont = Montserrat({
+  subsets: ["latin"],
+  weight: ["500", "700", "800"],
+  variable: "--font-mont",
 });
 
 export default function RootLayout({
@@ -20,7 +26,9 @@ export default function RootLayout({
         <meta name="description" content="The sea battle game in web." />
         <link rel="icon" href="/favicon.svg" />
       </head>
-      <body className={`antialiased ${jet.className} font-[700]`}>
+      <body
+        className={`antialiased ${jet.className} ${mont.variable} font-[700]`}
+      >
         {children}
         <Toaster
           position="top-right"
