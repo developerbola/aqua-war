@@ -16,7 +16,3 @@ img {
   filter: blur(4px);
   backdrop-filter: blur(0.5px);
 }
-
-#land::-webkit-scrollbar {
-  width: 0;
-}

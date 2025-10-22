@@ -326,7 +326,7 @@ export default function Game() {
       newCells.flat().filter((c) => c.ship && c.hit).length ===
       opponentBoard.totalShipCells;
     if (allSunk) {
-      toast.success("You win! All opponent ships sunk.");
+      toast.success("You win!");
       resetGame();
     }
   };
@@ -379,8 +379,8 @@ export default function Game() {
   const getCellClass = (cell: Cell, isPlayer: boolean) => {
     let cls =
       "border border-gray-200 w-8 h-8 flex items-center justify-center text-xs cursor-pointer hover:bg-gray-50 transition-colors";
-    if (cell.hit) cls += " bg-red-100 text-red-600 border-red-300";
-    if (cell.miss) cls += " bg-blue-100 text-blue-600 border-blue-300";
+    if (cell.hit) cls += " bg-red-600 hover:bg-red-600 text-white";
+    if (cell.miss) cls += " ";
     if (cell.ship && isPlayer)
       cls += " bg-gray-800 hover:bg-gray-800 text-white";
     if (!isPlayer && !cell.hit && !cell.miss) cls += " bg-gray-50";
@@ -448,9 +448,9 @@ export default function Game() {
   const DraggableShip = ({ ship }: { ship: Ship }) => (
     <div
       draggable="true"
-      onDragStart={(e) =>
-        handleDragStart(e, { ship, orientation, isNew: true })
-      }
+      onDragStart={(e) => {
+        handleDragStart(e, { ship, orientation, isNew: true });
+      }}
       onDragEnd={(e) => {
         e.dataTransfer.clearData(); // Clean up
       }}
@@ -520,9 +520,19 @@ export default function Game() {
       <div
         className={cls}
         onClick={handleClick}
-        onDragOver={handleDragOver}
-        onDrop={(e) => handleDrop(e, cell.row, cell.col)}
-        draggable={false} // Prevent cells from being dragged
+        onDragOver={(e) => {
+          e.preventDefault(); // important so drop works
+          e.currentTarget.style.background = "#00ff0040";
+        }}
+        onDragLeave={(e) => {
+          e.currentTarget.style.background = ""; // reset when leaving
+        }}
+        onDrop={(e) => {
+          e.preventDefault();
+          e.currentTarget.style.background = ""; // remove highlight after drop
+          handleDrop(e, cell.row, cell.col);
+        }}
+        draggable={false}
       >
         {children}
       </div>
@@ -568,13 +578,21 @@ export default function Game() {
                 isPlayer={isPlayer}
                 onClick={onClick}
               >
-                {cell.hit
-                  ? "🔴"
-                  : cell.miss
-                  ? "○"
-                  : cell.ship && isPlayer
-                  ? "■"
-                  : ""}
+                {cell.hit ? (
+                  "■"
+                ) : cell.miss ? (
+                  <div>
+                    <img
+                      src="/hitted_block.svg"
+                      alt="miss"
+                      className="opacity-60"
+                    />
+                  </div>
+                ) : cell.ship && isPlayer ? (
+                  "■"
+                ) : (
+                  ""
+                )}
               </DroppableCell>
             ))}
           </React.Fragment>

@@ -1,10 +1,10 @@
 export interface DragItem {
   ship: Ship;
-  orientation: 'horizontal' | 'vertical';
+  orientation: "horizontal" | "vertical";
   isNew: boolean;
   oldRow?: number;
   oldCol?: number;
-  oldOrientation?: 'horizontal' | 'vertical';
+  oldOrientation?: "horizontal" | "vertical";
 }
 
 export const ships = [
@@ -44,7 +44,7 @@ export const getShipName = (size: number): string => {
     case 1:
       return " ";
     default:
-      return ` `; // ■
+      return ` `;
   }
 };
 

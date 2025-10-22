@@ -41,7 +41,8 @@ export default function RootLayout({
               fontSize: "17px",
               fontWeight: "500",
               padding: "10px 15px",
-              width: "200px",
+              maxWidth: "500px",
+              width: "auto",
             },
           }}
         />
