@@ -1,6 +1,8 @@
 import { Toaster } from "@/components/ui/sonner";
 import "./styles/globals.css";
 import { JetBrains_Mono, Montserrat } from "next/font/google";
+import WSProvider from "@/components/WSProvider";
+import LoadingWindow from "@/components/LoadingWindow";
 
 const jet = JetBrains_Mono({
   subsets: ["latin"],
@@ -46,6 +48,8 @@ export default function RootLayout({
             },
           }}
         />
+        <WSProvider />
+        <LoadingWindow />
       </body>
     </html>
   );

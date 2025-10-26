@@ -1,52 +1,36 @@
+"use client";
+
+import { wsAtom } from "@/atoms/atom";
+import { freezeAtom } from "@/atoms/atom";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, layers } from "@/lib/utils";
+import { useAtomValue, useAtom } from "jotai";
+import { useRouter } from "next/navigation";
 
 export default function Start() {
-  const h = 80 + 80;
-  const w = 190 + 80;
+  const [freeze, setFreeze] = useAtom(freezeAtom);
+  const ws = useAtomValue(wsAtom);
+  const router = useRouter();
 
-  const layers = [
-    {
-      blur: 16,
-      gradient: "transparent 0%, white 12.5%, white 25%, transparent 37.5%",
-    },
-    {
-      blur: 8,
-      gradient: "transparent 12.5%, white 25%, white 37.5%, transparent 50%",
-    },
-    {
-      blur: 4,
-      gradient: "transparent 25%, white 37.5%, white 50%, transparent 62.5%",
-    },
-    {
-      blur: 2,
-      gradient: "transparent 37.5%, white 50%, white 62.5%, transparent 75%",
-    },
-    {
-      blur: 1,
-      gradient: "transparent 50%, white 62.5%, white 75%, transparent 87.5%",
-    },
-    {
-      blur: 0.5,
-      gradient: "transparent 62.5%, white 75%, white 87.5%, transparent 100%",
-    },
-    {
-      blur: 0.25,
-      gradient: "transparent 75%, white 87.5%, white 100%",
-    },
-    {
-      blur: 0.1,
-      gradient: "transparent 87.5%, white 100%",
-    },
-    {
-      blur: 0.05,
-      gradient: "transparent 94%, white 100%",
-    },
-    {
-      blur: 0.01,
-      gradient: "transparent 98%, white 100%",
-    },
-  ];
+  const h = 160;
+  const w = 270;
+
+  const handleClick = () => {
+    if (freeze) return; // prevent multiple clicks
+
+    if (!ws) return console.log("ws is null");
+    setFreeze(true);
+
+    ws.send(JSON.stringify({ type: "create" }));
+
+    ws.onmessage = (e) => {
+      const { roomId } = JSON.parse(e.data);
+      router.push(`/room/${roomId}`);
+    };
+
+    // Unfreeze after 5s (optional)
+    setTimeout(() => setFreeze(false), 5000);
+  };
 
   return (
     <div
@@ -56,19 +40,9 @@ export default function Start() {
         `left-[calc(100%-190px-105px-10px)]`
       )}
     >
-      <div
-        className="relative grid place-items-center"
-        style={{
-          display: "grid",
-          placeItems: "center",
-        }}
-      >
+      <div className="relative grid place-items-center">
         <div
-          style={{
-            position: "relative",
-            height: `${h}px`,
-            width: `${w}px`,
-          }}
+          style={{ position: "relative", height: `${h}px`, width: `${w}px` }}
         >
           {layers.map((layer, index) => (
             <div
@@ -85,7 +59,12 @@ export default function Start() {
               }}
             />
           ))}
-          <Button className="h-[80px] w-[205px] text-4xl z-10 absolute inset-0 m-auto active:scale-98 hover:cursor-pointer hover:bg-primary">
+
+          <Button
+            className="h-[80px] w-[205px] text-4xl z-10 absolute inset-0 m-auto active:scale-98 hover:cursor-pointer hover:bg-primary disabled:opacity-100 disabled:cursor-not-allowed transition-all duration-300"
+            onClick={handleClick}
+            disabled={freeze}
+          >
             Play
           </Button>
         </div>

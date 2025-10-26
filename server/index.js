@@ -16,25 +16,20 @@ function send(ws, data) {
   }
 }
 
-
-
-
 function createRoom(ws) {
   const roomId = Math.random().toString(36).slice(2, 8);
-
   rooms.set(roomId, { players: [ws] });
-  
+
   ws.roomId = roomId;
-  
   ws.playerId = 1;
 
-  send(ws, { system: `Room ${roomId} created. Waiting for opponent...` });
-  
+  send(ws, {
+    system: `Room ${roomId} created. Waiting for opponent...`,
+    roomId,
+  });
+
   console.log(`Room ${roomId} created`);
 }
-
-
-
 
 function joinRoom(roomId, ws) {
   const room = rooms.get(roomId);
@@ -59,9 +54,6 @@ function joinRoom(roomId, ws) {
   console.log(`Player joined room ${roomId}`);
 }
 
-
-
-
 function leaveRoom(ws) {
   const roomId = ws.roomId;
   if (!roomId) return;
@@ -78,9 +70,6 @@ function leaveRoom(ws) {
     send(remaining, { system: "Opponent left the game." });
   }
 }
-
-
-
 
 function handleAttack(ws, coord) {
   const validCols = "ABCDEFHIJ";
@@ -111,9 +100,6 @@ function handleAttack(ws, coord) {
   console.log(`Player ${ws.playerId} attacked ${coord} in room ${ws.roomId}`);
 }
 
-
-
-
 wss.on("connection", (ws) => {
   console.log("new connection");
 
@@ -126,28 +112,30 @@ wss.on("connection", (ws) => {
       switch (msg.type) {
         case "create":
           if (ws.roomId) {
-            send(ws, { error: "Already in a room. Leave first" });
-            return;
+            leaveRoom(ws);
           }
           createRoom(ws);
           break;
 
         case "join":
           if (ws.roomId) {
-            send(ws, { error: "already in a room. leave first" });
-            return;
+            leaveRoom(ws);
           }
           joinRoom(msg.room, ws);
           break;
+
         case "attack":
           if (!ws.roomId) {
             send(ws, { error: "Join or create a room first" });
             return;
           }
           handleAttack(ws, msg.coord);
+          break;
+
         case "leave":
           leaveRoom(ws);
           break;
+          
         default:
           send(ws, { error: "unknown message type" });
       }
@@ -160,9 +148,6 @@ wss.on("connection", (ws) => {
   ws.on("close", () => leaveRoom(ws));
   ws.on("error", (err) => console.error("WebSocket error: ", err.message));
 });
-
-
-
 
 const PORT = 8080;
 server.listen(PORT, () => {
