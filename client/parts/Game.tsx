@@ -302,6 +302,7 @@ export default function Game() {
       newCells[row][col].hit = true;
 
       const audio = new Audio("/sounds/hit.mp3");
+      audio.volume = 0.3;
       audio.play();
 
       // Check for sunk ships after this hit

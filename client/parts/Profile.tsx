@@ -1,7 +1,7 @@
 const Profile = () => {
   return (
     <div
-      className="absolute top-6 left-[50px] flex items-center justify-center gap-2 p-3"
+      className="absolute top-6 left-[50px] flex items-center justify-center gap-2 p-3 pr-5"
       id="balanceContainer"
     >
       <div className="z-10">

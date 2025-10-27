@@ -4,9 +4,12 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useAtomValue } from "jotai";
+import { wsAtom } from "@/atoms/atom";
 
 export default function LeavingToast() {
   const router = useRouter();
+  const ws = useAtomValue(wsAtom);
 
   useEffect(() => {
     // Push initial history state
@@ -25,6 +28,7 @@ export default function LeavingToast() {
             <Button
               onClick={() => {
                 toast.dismiss();
+                ws?.send(JSON.stringify({ type: "leave" }));
                 router.push("/");
               }}
               variant="destructive"
