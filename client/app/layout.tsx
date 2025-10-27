@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Aqua War</title>
+        <title>aqua</title>
         <meta name="description" content="The sea battle game in web." />
         <link rel="icon" href="/favicon.svg" />
       </head>
@@ -47,6 +47,7 @@ export default function RootLayout({
               width: "auto",
             },
           }}
+          visibleToasts={1}
         />
         <WSProvider />
         <LoadingWindow />

@@ -300,6 +300,10 @@ export default function Game() {
     const wasShip = newCells[row][col].ship;
     if (wasShip) {
       newCells[row][col].hit = true;
+
+      const audio = new Audio("/sounds/hit.mp3");
+      audio.play();
+
       // Check for sunk ships after this hit
       let sunkAny = false;
       for (const placement of opponentPlacedShips) {
@@ -327,6 +331,7 @@ export default function Game() {
       opponentBoard.totalShipCells;
     if (allSunk) {
       toast.success("You win!");
+      // setTimeout(() => {}, 2000); show win window
       resetGame();
     }
   };
